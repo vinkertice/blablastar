@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h2>Registered Spaceships</h2>
+    <div class="trip-list">
+        {% for ship in ships %}
+            <div class="jumbotron ship-card">
+                <img src="{{ ship.image_url }}" alt="" class="ship-avatar">
+                <p>{{ ship.name }} ({{ ship.model }})</p>
+                <p>{{ ship.description }}</p>
+            </div>
+        {% empty %}
+            <p>
+                Oops! I couldn't find any spaceships in the system
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

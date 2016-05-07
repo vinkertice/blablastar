@@ -1,8 +1,12 @@
 from datetime import datetime
 import logging
+from random import getrandbits
 
-from google.appengine.ext import ndb
+from google.appengine.ext import ndb, blobstore
 from google.appengine.api.memcache import Client
+from google.appengine.api.images import Image, JPEG, get_serving_url, delete_serving_url
+
+import cloudstorage as gcs
 
 bbs_memcache = Client()
 
@@ -86,3 +90,56 @@ class StarTrip(ndb.Model):
             result = cls.query().order(-cls.date).fetch(limit)
         params = {'searched_origin': origin, 'searched_destiny': destiny, 'searched_date': date}
         return result, params
+
+
+class SpaceShip(ndb.Model):
+    """ Space ship with a name and a picture """
+    name = ndb.StringProperty(required=True)
+    model = ndb.StringProperty()
+    description = ndb.TextProperty()
+    image_gcs_key = ndb.StringProperty()
+
+    @classmethod
+    def save_from_request(cls, request, image_blob):
+        image_gcs_key = cls.store_picture_from_content(image_blob.key())
+
+        ship = cls(id=request.get('name'), name=request.get('name'),
+                   model=request.get('model'), description=request.get('description'),
+                   image_gcs_key=image_gcs_key)
+        ship.put()
+        logging.info("Stored {}".format(ship.key))
+
+    @classmethod
+    def store_picture_from_content(cls, blob_key):
+        """ Resize picture and upload to Cloud Storage bucket. Return the GCS key """
+        data = blobstore.BlobReader(blob_key).read()
+        img = Image(data)
+        img.resize(width=800, height=600)
+        # img.im_feeling_lucky()
+        img = img.execute_transforms(output_encoding=JPEG)
+
+        new_gcs_key = cls.upload_blob_to_gcs(img, content_type='img/jpeg')
+
+        # delete original blob
+        delete_serving_url(blob_key)
+        blobstore.delete(blob_key)
+
+        return new_gcs_key
+
+    @staticmethod
+    def upload_blob_to_gcs(data, filename=None, bucket='/spaceships/', content_type='img/jpg', options=None):
+        """ Upload a blob to Google Cloud Storage and return its new blob key """
+        filename = filename or "%032x" % getrandbits(128)
+        options = options or {'x-goog-acl': 'public-read'}
+        with gcs.open(bucket + filename, 'w',
+                      content_type=content_type,
+                      options=options) as output:
+            output.write(data)
+        # Blobstore API requires extra /gs to distinguish against blobstore files.
+        gs_key = blobstore.create_gs_key('/gs' + bucket + filename)
+        logging.info("GCS File {} created, key={}".format(filename, gs_key))
+        return gs_key
+
+    @property
+    def image_url(self):
+        return get_serving_url(self.image_gcs_key)
