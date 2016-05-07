@@ -10,7 +10,7 @@ class HomeHandler(RequestHandler):
     """ Load latest trips and all locations, for filtering """
     def get(self):
         logging.info("In HomeHandler")
-        locations = Location.query().fetch()
+        locations = Location.get_all()
         trips, params = StarTrip.query_from_request(self.request)
         template_values = {'trips': trips, 'locations': locations}
         template_values.update(params)
@@ -32,7 +32,7 @@ class StarTripHandler(RequestHandler):
                 return
             html = render('star_trip.html', {'trip': star_trip})
         else:
-            locations = Location.query().fetch()
+            locations = Location.get_all()
             html = render('star_trip_form.html', {'locations': locations})
         self.response.write(html)
 
