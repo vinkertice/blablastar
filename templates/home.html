@@ -1,0 +1,41 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="search-bar">
+        Looking for a shared star trip?
+        <form action="" method="post">
+            <select name="origin" id="" required>
+                <option value="">From</option>
+                {% for location in locations %}
+                    <option value="{{ location.key.id }}" {% if location.key == searched_origin %}selected{% endif %}>{{ location.name }}</option>
+                {% endfor %}
+            </select>
+            <select name="destiny" id="" required>
+                <option value="">To</option>
+                {% for location in locations %}
+                    <option value="{{ location.key.id }}" {% if location.key == searched_destiny %}selected{% endif %}>{{ location.name }}</option>
+                {% endfor %}
+            </select>
+            <input type="date" placeholder="date" name="date" value="{{ searched_date|date:'c'|default:'' }}" required>
+            <input type="submit" value="Search">
+        </form>
+    </div>
+    <div class="trip-list">
+        {% for trip in trips %}
+            <div class="trip-card">
+                <p>Trip from {{ trip.origin.id }} to {{ trip.destiny.id }} on {{ trip.date|date:"N d, Y" }}</p>
+                <p>
+                    <em>{{ trip.description|slice:":100" }}</em>
+                    Pilot: {{ trip.pilot_name }}, seats: {{ trip.booked_seats }}/{{ trip.available_seats }}<
+                </p>
+                <p><strong>{{ trip.price }}</strong> Galactic Credits</p>
+                <a href="/star_trip/{{ trip.key.id }}">Go to trip</a>
+            </div>
+        {% empty %}
+            <p>
+                Oops! I couldn't find any interstelar trips planned in the galaxy
+                at the moment. Try in a few minutes
+            </p>
+        {% endfor %}
+    </div>
+{% endblock %}

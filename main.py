@@ -3,27 +3,69 @@ import logging
 from google.appengine.ext.webapp import RequestHandler, WSGIApplication, template
 from os.path import join, dirname
 
-
-class OldHomeHandler(RequestHandler):
-    """ Example of hardcoded HTML in response """
-    def get(self):
-        logging.info("In OldHomeHandler")
-        self.response.write('<html>Hello <strong>world!</strong></html>')
+from models import StarTrip, Location
 
 
 class HomeHandler(RequestHandler):
-    """ Example of template rendered controller with the same
-        variable in the request and the response
-    """
+    """ Load latest trips and all locations, for filtering """
     def get(self):
         logging.info("In HomeHandler")
-        x = self.request.get('x', 1)
-        html = render('hello.html', {'x': x})
+        locations = Location.query().fetch()
+        trips, params = StarTrip.query_from_request(self.request)
+        template_values = {'trips': trips, 'locations': locations}
+        template_values.update(params)
+        html = render('home.html', template_values)
         self.response.write(html)
 
+    def post(self):
+        self.get()
+
+
+class StarTripHandler(RequestHandler):
+    def get(self, trip_id=None):
+        """ Display an existing star trip or create a new one """
+        if trip_id:
+            star_trip = StarTrip.get_by_id(int(trip_id))
+            if not star_trip:
+                self.response.out.write("Trip Not found")
+                self.error(404)
+                return
+            html = render('star_trip.html', {'trip': star_trip})
+        else:
+            locations = Location.query().fetch()
+            html = render('star_trip_form.html', {'locations': locations})
+        self.response.write(html)
+
+    def post(self, trip_id=None):
+        """ Create a new trip """
+        try:
+            StarTrip.save_from_request(self.request)
+        except Exception as e:
+            self.error(403)
+            self.response.out.write(e)
+            return
+        self.redirect('/')
+
+
+class LocationHandler(RequestHandler):
+    def get(self):
+        """ Display a location creation form """
+        html = render('location.html')
+        self.response.write(html)
+
+    def post(self, trip_id=None):
+        """ Create a new location (or override existing) """
+        try:
+            Location.save_from_request(self.request)
+        except Exception as e:
+            self.error(403)
+            self.response.out.write(e)
+            return
+        self.redirect('/')
 
 app = WSGIApplication([
-    ('/old-home', OldHomeHandler),
+    ('/create_location', LocationHandler),
+    (r'/star_trip/?(?P<trip_id>[\w-]*)', StarTripHandler),
     ('/.*', HomeHandler),
 ], debug=True)
 

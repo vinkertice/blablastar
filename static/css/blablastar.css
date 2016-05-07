@@ -1,0 +1,19 @@
+.main-menu ul li {
+    padding: 5px 10px;
+    display: inline-block;
+    border: 1px solid #828282;
+}
+
+.search-bar {
+    margin: 10px 20px;
+    padding: 5px 10px;
+    border: 1px solid #828282;
+    display: inline-block;
+}
+
+.trip-card {
+    margin: 10px 20px;
+    padding: 5px 10px;
+    border: 1px solid #828282;
+    display: inline-block;
+}

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <h1>Tip details</h1>
+    <p>Trip from {{ trip.origin.id }} to {{ trip.destiny.id }} on {{ trip.date|date:"N d, Y" }}</p>
+    <p>Pilot: {{ trip.pilot_name }}, seats: {{ trip.booked_seats }}/{{ trip.available_seats }}</p>
+    <p>
+        <em>{{ trip.description }}</em>
+    </p>
+    <p>Created on {{ trip.created|date:"c" }}</p>
+    <p>Price per seat: <strong>{{ trip.price }}</strong> Galactic Credits
+    </p>
+{% endblock %}

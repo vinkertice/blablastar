@@ -1,0 +1,28 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="/css/blablastar.css">
+    </head>
+    <body>
+        <div class="logo">
+            <a href="/">
+                <img src="/img/logo.png" alt="logo" id="logo-img" width="800px">
+            </a>
+        </div>
+        <div class="main-menu">
+            <ul>
+                <li>
+                    <a href="/star_trip">Publish a Star Trip</a>
+                </li>
+                <li>
+                    <a href="/create_location">Create a location</a>
+                </li>
+            </ul>
+        </div>
+
+        <div>
+            {% block content %}
+
+            {% endblock %}
+        </div>
+    </body>
+</html>
