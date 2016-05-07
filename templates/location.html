@@ -1,10 +1,12 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Create a Galaxy Location</h1>
+  <div class="jumbotron">
+    <h2>Create a Galaxy Location</h2>
     <p>Stars, planets, outposts, cities, etc.</p>
-    <form action="" method="post">
-        <input type="text" name="name" placeholder="Type the location name">
-        <input type="submit" value="Create">
+    <form action="" method="post" class="form-inline">
+        <input type="text" name="name" placeholder="Type the location name" class="form-control" >
+        <input type="submit" value="Create" class="btn btn-default" >
     </form>
+  </div>
 {% endblock %}

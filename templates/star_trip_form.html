@@ -1,31 +1,44 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Publish a new trip</h1>
+  <div class="jumbotron">
+    <h2 >Publish a new trip</h2>
     <form action="" method="post">
-        <select name="origin" id="" required>
+        <div class="form-group">
+            <select name="origin" id="" required class="form-control">
                 <option value="">From</option>
                 {% for location in locations %}
                     <option value="{{ location.key.id }}">{{ location.name }}</option>
                 {% endfor %}
             </select>
-            <select name="destiny" id="" required>
+        </div>
+        <div class="form-group">
+            <select name="destiny" id="" class="form-control" required>
                 <option value="">To</option>
                 {% for location in locations %}
                     <option value="{{ location.key.id }}">{{ location.name }}</option>
                 {% endfor %}
             </select>
+        </div>
+        <div class="form-group">
+            <input type="date" class="form-control" name="date" placeholder="date" required>
 
-        <input type="date" name="date" placeholder="date" required>
-        <input type="number" name="seats" placeholder="Available seats" required step="1" min="1">
-        <input type="text" name="pilot" placeholder="Pilot's name">
-        <input type="number" name="price" placeholder="Price, in Galactic Credits" required min="0" step="1">
-        <h3>Details</h3>
-        <textarea name="description" id="" cols="30" rows="10">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" name="seats" placeholder="Available seats" required step="1" min="1">
+        </div>
+        <div class="form-group">
+            <input type="text" class="form-control" name="pilot" placeholder="Pilot's name">
+        </div>
+        <div class="form-group">
+            <input type="number" class="form-control" name="price" placeholder="Price, in Galactic Credits" required min="0" step="1">
+        </div>
+        <div class="form-group">
+            <h3>Details</h3>
+            <textarea name="description" id="" cols="30" rows="10" class="form-control"></textarea>
+        </div>
 
-        </textarea>
-
-        <input type="submit" value="Create trip">
+        <input type="submit" value="Create trip" class="btn btn-default">
     </form>
-
+  </div>
 {% endblock %}

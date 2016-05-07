@@ -1,19 +1,29 @@
-.main-menu ul li {
-    padding: 5px 10px;
-    display: inline-block;
-    border: 1px solid #828282;
+.navbar-fixed-top {
+    background-color: black;
 }
 
-.search-bar {
-    margin: 10px 20px;
-    padding: 5px 10px;
-    border: 1px solid #828282;
-    display: inline-block;
+.container.after-navbar {
+    margin-top: 90px;
 }
 
-.trip-card {
-    margin: 10px 20px;
-    padding: 5px 10px;
-    border: 1px solid #828282;
-    display: inline-block;
+.navbar-fixed-top li a {
+    line-height: 40px;
+}
+.navbar-brand.logo {
+    margin: 0;
+    padding: 0;
+}
+.navbar-brand.logo img {
+    padding-top: 10px;
+    height: 70px;
+}
+
+.larger-font {
+    font-size: 1.5em;
+}
+
+#search-bar {
+    padding: 10px 25px 0;
+    border-radius: 6px;
+    background-color: #ffd700;
 }

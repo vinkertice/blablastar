@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>Tip details</h1>
+  <div class="jumbotron">
+    <h2>Tip details</h2>
     <p>Trip from {{ trip.origin.id }} to {{ trip.destiny.id }} on {{ trip.date|date:"N d, Y" }}</p>
     <p>Pilot: {{ trip.pilot_name }}, seats: {{ trip.booked_seats }}/{{ trip.available_seats }}</p>
     <p>
@@ -10,4 +11,5 @@
     <p>Created on {{ trip.created|date:"c" }}</p>
     <p>Price per seat: <strong>{{ trip.price }}</strong> Galactic Credits
     </p>
+  </div>
 {% endblock %}
