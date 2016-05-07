@@ -1,0 +1,5 @@
+cron:
+- description: calculate Top Locations
+  url: /rollup/top_locations
+  schedule: every day 7:00
+  target: rollup

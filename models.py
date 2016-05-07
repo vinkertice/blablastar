@@ -1,4 +1,5 @@
-from datetime import datetime
+from collections import defaultdict
+from datetime import datetime, timedelta
 import logging
 from random import getrandbits
 
@@ -143,3 +144,32 @@ class SpaceShip(ndb.Model):
     @property
     def image_url(self):
         return get_serving_url(self.image_gcs_key)
+
+
+class TopLocations(ndb.Model):
+    """ Rollup model to save the most frequent destinations in the Galaxy """
+    destinations = ndb.KeyProperty(repeated=True)
+    origins = ndb.KeyProperty(repeated=True)
+    instance_id = '1'
+
+    @classmethod
+    def run(cls, limit=5, days=5):
+        """ Run rollup: get the top 5 destinations and origins of the
+            last 5 days
+        """
+        today = datetime.today()
+        t1 = today - timedelta(days=days)
+        query = StarTrip.query(StarTrip.date > t1)
+        origins = defaultdict(int)
+        destinations = defaultdict(int)
+        for trip in query.iter():
+            origins[trip.origin] += 1
+            destinations[trip.destiny] += 1
+        top_origins = sorted(origins.items(), key=lambda t: t[1], reverse=True)[:limit]
+        top_destinations = sorted(origins.items(), key=lambda t: t[1], reverse=True)[:limit]
+
+        top_locs = cls(id=cls.instance_id, origins=[o[0] for o in top_origins],
+                       destinations=[d[0] for d in top_destinations])
+        top_locs.put()
+        logging.info("Top Locations saved: {}".format(top_locs))
+

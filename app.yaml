@@ -17,6 +17,9 @@ handlers:
 - url: /img
   static_dir: static/img
 
+- url: /rollup/.*
+  script: rollup.app
+
 - url: .*
   script: main.app
 
